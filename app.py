@@ -1,7 +1,5 @@
 import pandas as pd
 import streamlit as st
-import plotly.express as px
-from termcolor import colored
 from streamlit_js_eval import bootstrapButton, get_geolocation
 
 
@@ -12,7 +10,7 @@ df['Size'] = 5
 df['Color'] = '#800080'
 
 
-st.set_page_config(page_title="Bhopal University Chatbot for BRTS Navigation", page_icon="📚", layout="wide")
+st.set_page_config(page_title="Bhopal BRTS Chatbot", page_icon="📍", layout="wide")
 
 st.write("""
 <style>
@@ -45,5 +43,6 @@ st.map(
     height=500,
     latitude='Latitude',
     longitude='Longitude',
-    zoom=4 if check_location else 10,
+    zoom=10,
+    # zoom=4 if check_location else 10,
 )
