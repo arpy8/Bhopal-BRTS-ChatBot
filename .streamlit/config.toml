@@ -1,5 +1,2 @@
-[client]
-showErrorDetails = true
-
 [theme]
-base = "dark"
+base="dark"
