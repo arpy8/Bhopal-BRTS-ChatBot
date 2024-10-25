@@ -36,7 +36,12 @@ def main(overview):
         with cols[0]:
             st.dataframe(og_df, height=420, use_container_width=True)
         with cols[1]:
-            st.map(df, latitude="Latitude", longitude="Longitude", color="Color", height=420, size='Size')
+            st.map(df if selected_route == 'All' else df.loc[df['Route']==selected_route], \
+                latitude="Latitude", 
+                longitude="Longitude", 
+                color="Color", 
+                height=420, 
+                size='Size')
             
     except IndexError:
         overview.dataframe(df, height=200)
