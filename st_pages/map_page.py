@@ -53,7 +53,7 @@ def main(map):
         
         with cols[0]:
             # with st.container(border=True, height=530):
-            with st.container(height=530):
+            with st.container():
                 st.write('<h4 class="poppins-light">Dashboard</h4>', unsafe_allow_html=True)
                 locate_me = st.checkbox("Locate Me", key="locate_me")
                 mapbox_style = st.selectbox("Map Style", MAPBOX_STYLES, key="mapbox_style")
