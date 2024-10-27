@@ -10,7 +10,7 @@ def main(team):
     """, unsafe_allow_html=True)
     team.write("<br>", unsafe_allow_html=True)
 
-    with team.container(border=True):
+    with team.container():
         st.write("<br>"*2, unsafe_allow_html=True)
         columns = st.columns(3)
         for col in columns:
