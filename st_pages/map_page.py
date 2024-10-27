@@ -85,7 +85,7 @@ def main(map):
                         layers=[layer],
                         tooltip=tooltip,
                 )
-            st.pydeck_chart(map, height=420)
+            st.pydeck_chart(map)
         
     except Exception as e:
         st.error(e)
