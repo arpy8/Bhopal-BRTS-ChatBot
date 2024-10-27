@@ -56,8 +56,9 @@ def main(map):
                 st.write('<h4 class="poppins-light">Dashboard</h4>', unsafe_allow_html=True)
                 locate_me = st.checkbox("Locate Me", key="locate_me")
                 mapbox_style = st.selectbox("Map Style", MAPBOX_STYLES, key="mapbox_style")
-                landmark_color = st.color_picker("Color", key="landmark_color", value="#ffff00")
-                st.write('<button class="my-button"><i class="fa-solid fa-rotate-right">&nbsp;&nbsp;</i>Reset</button>', unsafe_allow_html=True)
+                # landmark_color = st.color_picker("Color", key="landmark_color", value="#ffff00")
+                # st.write('<button class="my-button"><i class="fa-solid fa-rotate-right">&nbsp;&nbsp;</i>Reset</button>', unsafe_allow_html=True)
+                st.info('more components to be added here')
                 
                 if locate_me:
                     loc = get_geolocation()
@@ -76,16 +77,14 @@ def main(map):
 
                 
         with cols[1]:
-            layer, view_state, tooltip = map_config(landmark_color)
-            
-            with st.container(border=True):
-                st.pydeck_chart(pdk.Deck(
-                    map_style=MAPBOX_STYLES[mapbox_style],
-                    initial_view_state=view_state,
-                    layers=[layer],
-                    tooltip=tooltip,
-                    height=200
-                ))
+            layer, view_state, tooltip = map_config(landmark_color="#ff0000")
+            map = pdk.Deck(
+                        map_style=MAPBOX_STYLES[mapbox_style],
+                        initial_view_state=view_state,
+                        layers=[layer],
+                        tooltip=tooltip,
+                )
+            st.pydeck_chart(map, height=420)
         
     except Exception as e:
         st.error(e)

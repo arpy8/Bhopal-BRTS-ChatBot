@@ -97,9 +97,9 @@ def main(overview):
         with cols[0]:
             st.dataframe(og_df if selected_route == 'All' else og_df.loc[df['route']==selected_route], height=420, use_container_width=True)
         with cols[1]:
-            with st.container(border=True):
+            with st.container():
                 map = generate_map(df, selected_route)
-                st.components.v1.html(map.to_html(as_string=True), height=380) 
+                st.components.v1.html(map.to_html(as_string=True), height=420) 
                 # st.pydeck_chart(map)
                 # st.map(df if selected_route == 'All' else df.loc[df['route']==selected_route],
                 #     color='color',
