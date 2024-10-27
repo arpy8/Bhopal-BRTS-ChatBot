@@ -28,11 +28,12 @@ CSS_STYLING = """
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">         
+
 <style>
 .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left {
     display: none !important;
 }
-.poppins-light, h2, h3, h4, h5, h6 {
+.poppins-light, p, h2, h3, h4, h5, h6 {
     font-family: "Poppins", sans-serif !important;
     font-weight: 200 !important;
     font-style: normal !important;
@@ -49,20 +50,53 @@ div[data-testid="stMetric"]
     border-radius: 5px;
     border-color: #26282e !important;
 }
+
+.my-button {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-weight: 400;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    min-height: 2.5rem;
+    margin: 0px;
+    line-height: 1.6;
+    color: inherit;
+    width: auto;
+    user-select: none;
+    background-color: rgb(19, 23, 32);
+    border: 1px solid rgba(250, 250, 250, 0.2);
+}
+
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 """
 
 LANDMARK_COLORS = {
-    "SR1": {"hex": "#FF5733", "rgb": [1.0, 0.34, 0.2]},
-    "SR2": {"hex": "#33A2FF", "rgb": [0.2, 0.64, 1.0]},
-    "SR3": {"hex": "#A833FF", "rgb": [0.66, 0.2, 1.0]},
-    "SR4": {"hex": "#33FFBD", "rgb": [0.2, 1.0, 0.74]},
-    "SR5": {"hex": "#FF33A8", "rgb": [1.0, 0.2, 0.66]},
-    "SR6": {"hex": "#FFD733", "rgb": [1.0, 0.84, 0.2]},
-    "SR7": {"hex": "#33FF57", "rgb": [0.2, 1.0, 0.34]},
-    "SR8": {"hex": "#FF8C33", "rgb": [1.0, 0.55, 0.2]},
-    "TR1": {"hex": "#334FFF", "rgb": [0.2, 0.31, 1.0]},
-    "TR2": {"hex": "#FF333F", "rgb": [1.0, 0.2, 0.25]},
-    "TR3": {"hex": "#33FF8D", "rgb": [0.2, 1.0, 0.55]},
-    "TR4": {"hex": "#B8FF33", "rgb": [0.72, 1.0, 0.2]}
+    "SR1": {"rgb":[255, 86, 51], "source": [255, 165, 0], "target": [255, 69, 0]},
+    "SR2": {"rgb":[51, 163, 255], "source": [0, 128, 128], "target": [0, 206, 209]},
+    "SR3": {"rgb":[168, 51, 255], "source": [138, 43, 226], "target": [255, 215, 0]},
+    "SR4": {"rgb":[51, 255, 188], "source": [255, 140, 0], "target": [255, 99, 71]},
+    "SR5": {"rgb":[255, 51, 168], "source": [0, 255, 127], "target": [255, 20, 147]},
+    "SR6": {"rgb":[255, 214, 51], "source": [34, 139, 34], "target": [60, 179, 113]},
+    "SR7": {"rgb":[51, 255, 86], "source": [135, 206, 235], "target": [46, 139, 87]},
+    "SR8": {"rgb":[255, 140, 51], "source": [0, 191, 255], "target": [25, 25, 112]},
+    "TR1": {"rgb":[51, 79, 255], "source": [255, 99, 71], "target": [178, 34, 34]},
+    "TR2": {"rgb":[255, 51, 63], "source": [255, 182, 193], "target": [255, 160, 122]},
+    "TR3": {"rgb":[51, 255, 140], "source": [72, 61, 139], "target": [173, 216, 230]},
+    "TR4": {"rgb":[183, 255, 51], "source": [255, 255, 0], "target": [255, 140, 0]},
+    "All": {"rgb":[183, 255, 51], "source": [255, 255, 0], "target": [255, 140, 0]}
+}
+
+MAPBOX_STYLES = {
+    "dark":"mapbox://styles/mapbox/dark-v11",
+    "streets":"mapbox://styles/mapbox/streets-v12",
+    "outdoors":"mapbox://styles/mapbox/outdoors-v12",
+    "light":"mapbox://styles/mapbox/light-v11",
+    "satellite":"mapbox://styles/mapbox/satellite-v9",
+    "satellite-streets":"mapbox://styles/mapbox/satellite-streets-v12",
+    "navigation-day":"mapbox://styles/mapbox/navigation-day-v1",
+    "navigation-night":"mapbox://styles/mapbox/navigation-night-v1"
 }

@@ -24,3 +24,10 @@ def find_closest_bus_station(df, current_lat, current_lon):
     closest_point = df.loc[df["distance"].idxmin()]
 
     return closest_point
+
+def hex_to_rgb(hex_value):
+    hex_value = hex_value.lstrip('#')
+    return list(int(hex_value[i:i+2], 16) for i in (0, 2, 4))
+
+if __name__ == '__main__':
+    print(hex_to_rgb("#ff0000"))
