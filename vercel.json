@@ -5,5 +5,11 @@
             "src": "public/trips_layer.html",
             "use": "@vercel/static"
         }
+    ],
+    "routes": [
+        {
+            "src": "/",
+            "dest": "/public/trips_layer.html"
+        }
     ]
 }
