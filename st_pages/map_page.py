@@ -3,16 +3,17 @@
 import pandas as pd
 import pydeck as pdk
 import streamlit as st
-
-# import plotly.express as px
 from streamlit_js_eval import get_geolocation
+# import plotly.express as px
+
+from utils.chatbot import ask_question
 from utils.constants import LANDMARK_COLORS, MAPBOX_STYLES, AVATAR
 from utils.utils import stream_data, find_closest_bus_station, first_message
-from utils.chatbot import make_rag_prompt
 
 
 og_df = pd.read_csv("assets/data/all_routes_combined.csv")
 df = og_df.copy()
+
 df["size"] = 5
 df["color"] = df.apply(lambda x: LANDMARK_COLORS[x["route"]]["rgb"], axis=1)
 
@@ -162,17 +163,19 @@ def main(map_):
                     )
                     df = pd.concat([df, additional_point])
 
-        with st.container(border=True):
+        with st.container(border=True, height=260 if locate_me else 220):
             if locate_me:
                 st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
-                st.write_stream(
-                    first_message(df=og_df, user_lat=user_lat, user_long=user_long)
-                )
+                first_message(df=og_df, user_lat=user_lat, user_long=user_long)
             else:
                 st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
                 st.write(
                     "Launched in 2006, Bhopal BRTS aimed to serve central districts but was discontinued in December 2023 due to traffic issues. Dismantling began January 2024, replaced by a central road divider."
                 )
+        
+        if not locate_me:
+            st.image(r"assets/img/omdena.png", use_container_width=True)
+                
 
     with cols[1]:
         with st.container(border=True, height=530):
@@ -193,48 +196,32 @@ def main(map_):
             )
             st.pydeck_chart(brts_map)
 
-    with cols[2]:
-        # if locate_me:
-        #     with st.container(border=True):
-        #         st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
-        #         st.write_stream(first_message(df=og_df, user_lat=user_lat, user_long=user_long))
+    with cols[2]:        
+        if "messages" not in st.session_state:
+            st.session_state["messages"] = [
+                {
+                    "role": "assistant", 
+                    "content": "I can help you with your queries about the BRTS System. How can I assist you today?"
+                }
+            ]
 
-        with st.container(border=True, height=530):
-            st.write('<h4 class="poppins-light">Chatbot</h4>', unsafe_allow_html=True)
+        st.write('<h4 class="poppins-light chatbot-heading">Chatbot</h4>', unsafe_allow_html=True)
+        with st.container(border=True, height=416):
+            
+            for msg in st.session_state.messages:
+                st.chat_message(msg["role"]).write(msg["content"])
+            
+            m1 = st.empty()
+            m2 = st.empty()
 
-            if "messages" not in st.session_state:
-                st.session_state["messages"] = [
-                    {
-                        "role": "assistant",
-                        "content": "How can I help you? this is a test message blah blah blah blah balh balh abla hab alah",
-                    }
-                ]
+        if prompt := st.chat_input():
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            m1.chat_message("user").write(prompt)
+            with st.spinner("Lemme think..."):
+                msg = ask_question(str(prompt))
+            st.session_state.messages.append({"role": "assistant", "content": msg})
+            m2.chat_message("assistant").write(msg)
 
-            chat_window = st.empty()
-
-            if prompt := st.chat_input(placeholder="Ask your question..."):
-                st.session_state.messages.append({"role": "user", "content": prompt})
-                st.session_state.messages.append(
-                    {"role": "assistant", "content": "sample response"}
-                )
-
-            with chat_window.container(border=False, height=370):
-                for msg in st.session_state.messages[:-1]:
-                    st.chat_message(msg["role"], avatar=AVATAR[msg["role"]]).write(
-                        msg["content"]
-                    )
-
-                if (
-                    st.session_state.messages[-1]["role"] == "assistant"
-                    and len(st.session_state.messages) > 1
-                ):
-                    st.chat_message("assistant", avatar=AVATAR["assistant"]).write(
-                        st.session_state.messages[-1]["content"]
-                    )
-
-
-# except Exception as e:
-#     st.error(e)
 
 if __name__ == "__main__":
     main()

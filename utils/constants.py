@@ -33,17 +33,19 @@ CSS_STYLING = """
 .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left {
     display: none !important;
 }
+
 .poppins-light, p, h2, h3, h4, h5, h6, li {
     font-family: "Poppins", sans-serif !important;
     font-weight: 200 !important;
     font-style: normal !important;
 }
+
 .poppins-light h1 {
     color: #00ff00 !important;
     font-size: 200px !important;
 }
-div[data-testid="stMetric"]
-{
+
+div[data-testid="stMetric"] {
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     padding: 10px 0 0 10px;
@@ -51,30 +53,8 @@ div[data-testid="stMetric"]
     border-color: #26282e !important;
 }
 
-.my-button {
-    display: inline-flex;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    font-weight: 400;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.5rem;
-    min-height: 2.5rem;
-    margin: 0px;
-    line-height: 1.6;
-    color: inherit;
-    width: auto;
-    user-select: none;
-    background-color: rgb(19, 23, 32);
-    border: 1px solid rgba(250, 250, 250, 0.2);
-}
 div[data-baseweb="textarea"], button[data-testid="stChatInputSubmitButton"] {
-position: absolute !important;
-    border-color: #ff000090 !important; 
-    top: 15px;
-    right: 0px; 
-    width: 100%;
+    border-color: #ffffff20 !important; 
 }
 
 div[data-baseweb="stChatMessageContent"] {
@@ -85,12 +65,33 @@ div[data-testid="stMarkdownContainer"] p {
     font-size: 13px;
 }
 
-button[data-testid="stChatInputSubmitButton"] {
-    right: 15px;
+p, ol, ul, dl {
 }
 
-p, ol, ul, dl {
-    margin: 0px 0px 0.5rem;
+.st-emotion-cache-jmw8un {
+    position: relative;
+    right: 10px;
+}
+
+.st-emotion-cache-1y5f4eg .e1nzilvr5 { 
+    position: relative;
+    right: 10px;
+} 
+
+.st-emotion-cache-janbn0 {
+    position: relative;
+    right: 10px;
+    background-color: rgba(38, 39, 48, 0.0);
+}
+
+.st-emotion-cache-janbn0 p {
+    position: relative;
+    left: 10px;
+    background-color: rgba(38, 39, 48, 0.0);
+}
+
+.st-emotion-cache-janbn0, .st-emotion-cache-4oy321 {
+    padding: 0.8rem 1rem 0rem 1rem;
 }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -195,7 +196,6 @@ MAPBOX_STYLES = {
 }
 
 AVATAR = {"assistant": "./assets/img/assistant.png", "user": "./assets/img/user.png"}
-
 
 RAG_PROMPT_CONSTANT = """\
 You are a helpful and informative bot that answers questions using text from the reference passage included below. \

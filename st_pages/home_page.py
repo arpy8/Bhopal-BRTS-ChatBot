@@ -11,7 +11,7 @@ def main(home):
         st.write("<br>" * 3, unsafe_allow_html=True)
 
         with st.columns(3)[1]:
-            st.image("assets/img/omdena.png", use_column_width=True)
+            st.image("assets/img/omdena.png", use_container_width=True)
 
         st.write("<br>", unsafe_allow_html=True)
         st.write(

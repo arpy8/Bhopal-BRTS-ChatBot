@@ -2,7 +2,6 @@ import streamlit as st
 from st_pages.home_page import main as home_page
 from st_pages.overview_page import main as overview_page
 from st_pages.map_page import main as map_page
-from st_pages.chatbot_page import main as chatbot_page
 from st_pages.team_page import main as team_page
 from utils.constants import CSS_STYLING
 
@@ -18,5 +17,4 @@ map_, home, overview, team = st.tabs(["Home", "Overview", "Chatbot", "Team"])
 home_page(home)
 overview_page(overview)
 map_page(map_)
-# chatbot_page(chatbot)
 team_page(team)

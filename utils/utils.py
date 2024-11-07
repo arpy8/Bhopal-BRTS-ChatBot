@@ -52,40 +52,49 @@ def find_closest_bus_station(df, current_lat, current_lon):
 
     return closest_point
 
-
 def hex_to_rgb(hex_value):
     hex_value = hex_value.lstrip("#")
     return list(int(hex_value[i : i + 2], 16) for i in (0, 2, 4))
 
 
 def first_message(df, user_lat, user_long):
-    closest_bus_station = find_closest_bus_station(df, user_lat, user_long)
+    try:
+        closest_bus_station = find_closest_bus_station(df, user_lat, user_long)
+        if closest_bus_station is not None:
+            # for word in (
+            #     MESSAGE_TEMPLATE[0]
+            #     .format(
+            #         station=closest_bus_station["station"],
+            #         distance=round(closest_bus_station["distance"], 2),
+            #         routes=" ".join(closest_bus_station["all_routes"]),
+            #     )
+            #     .split(" ")
+            # ):
+            #     yield word + " "
+            #     time.sleep(random.uniform(0.06, 0.1))
 
-    for word in (
-        MESSAGE_TEMPLATE[0]
-        .format(
-            station=closest_bus_station["station"],
-            distance=round(closest_bus_station["distance"], 2),
-            routes=" ".join(closest_bus_station["all_routes"]),
-        )
-        .split(" ")
-    ):
-        yield word + " "
-        time.sleep(random.uniform(0.06, 0.1))
-
-    st.link_button(
-        "Navigate using Google Map",
-        url=closest_bus_station["dir_to_closest_point"],
-        use_container_width=True,
-    )
-    return closest_bus_station
-
+            st.write(MESSAGE_TEMPLATE[0].format(
+                        station=closest_bus_station["station"],
+                        distance=round(closest_bus_station["distance"], 2),
+                        routes=" ".join(closest_bus_station["all_routes"])
+            ))
+            st.link_button(
+                "Navigate using Google Map",
+                url=closest_bus_station["dir_to_closest_point"],
+                use_container_width=True,
+            )
+            return closest_bus_station
+    
+    except KeyError:
+        pass
+    
+    except Exception as e:
+        st.error(e)
 
 def stream_data(data):
     for word in data.split(" "):
         yield word + " "
         time.sleep(random.uniform(0.06, 0.1))
-
 
 if __name__ == "__main__":
     print(hex_to_rgb("#ff0000"))
