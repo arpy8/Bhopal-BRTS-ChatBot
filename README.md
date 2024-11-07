@@ -6,3 +6,5 @@ This repository contains the code for the project "Developing an AI Chatbot for 
 **App Link**: https://bhopal-brts-chatbot.streamlit.app/
 
 **Dagshub Link**: https://dagshub.com/Omdena/VITBhopalUniversity_ChatbotforBRTSNavigation
+
+**Map Link**: https://bhopal-brts-map.vercel.app/
