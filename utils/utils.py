@@ -4,15 +4,17 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-MESSAGE_TEMPLATE = ["""
+MESSAGE_TEMPLATE = [
+    """
 The closest bus station from your location is **{station}**, which is approximately **{distance}** kms away from you. This station serves the following route(s): {routes}
 
 """,
-"""
+    """
 
 Would you like to get further information about this route or any other routes in the city?
-"""
+""",
 ]
+
 
 def haversine(lat1, lon1, lat2, lon2):
     if None not in (lat1, lon1, lat2, lon2):
@@ -27,8 +29,9 @@ def haversine(lat1, lon1, lat2, lon2):
 
         distance = R * c
         return distance
-    
+
     return None
+
 
 def find_closest_bus_station(df, current_lat, current_lon):
     df["distance"] = df.apply(
@@ -39,32 +42,50 @@ def find_closest_bus_station(df, current_lat, current_lon):
     )
     closest_point = df.loc[df["distance"].idxmin()]
     closest_point = closest_point.to_dict()
-    closest_point["dir_to_closest_point"] = f"https://www.google.com/maps/dir/{current_lat},{current_lon}/{closest_point['latitude']},{closest_point['longitude']}"
-    
-    closest_point["all_routes"] = list(df[df['station'] == closest_point['station']]['route'].unique())
-    
+    closest_point["dir_to_closest_point"] = (
+        f"https://www.google.com/maps/dir/{current_lat},{current_lon}/{closest_point['latitude']},{closest_point['longitude']}"
+    )
+
+    closest_point["all_routes"] = list(
+        df[df["station"] == closest_point["station"]]["route"].unique()
+    )
+
     return closest_point
 
+
 def hex_to_rgb(hex_value):
-    hex_value = hex_value.lstrip('#')
-    return list(int(hex_value[i:i+2], 16) for i in (0, 2, 4))
+    hex_value = hex_value.lstrip("#")
+    return list(int(hex_value[i : i + 2], 16) for i in (0, 2, 4))
+
 
 def first_message(df, user_lat, user_long):
     closest_bus_station = find_closest_bus_station(df, user_lat, user_long)
-    
-    for word in MESSAGE_TEMPLATE[0].format(station=closest_bus_station['station'], 
-                                            distance=round(closest_bus_station['distance'], 2), 
-                                                routes=" ".join(closest_bus_station['all_routes'])).split(" "):
+
+    for word in (
+        MESSAGE_TEMPLATE[0]
+        .format(
+            station=closest_bus_station["station"],
+            distance=round(closest_bus_station["distance"], 2),
+            routes=" ".join(closest_bus_station["all_routes"]),
+        )
+        .split(" ")
+    ):
         yield word + " "
         time.sleep(random.uniform(0.06, 0.1))
-        
-    st.link_button("Navigate using Google Map", url=closest_bus_station["dir_to_closest_point"], use_container_width=True)
+
+    st.link_button(
+        "Navigate using Google Map",
+        url=closest_bus_station["dir_to_closest_point"],
+        use_container_width=True,
+    )
     return closest_bus_station
+
 
 def stream_data(data):
     for word in data.split(" "):
         yield word + " "
         time.sleep(random.uniform(0.06, 0.1))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     print(hex_to_rgb("#ff0000"))

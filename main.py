@@ -6,10 +6,14 @@ from st_pages.chatbot_page import main as chatbot_page
 from st_pages.team_page import main as team_page
 from utils.constants import CSS_STYLING
 
-st.set_page_config(page_title="Bhopal's BRTS Chatbot", page_icon='assets/img/favicon.png', layout='wide')
+st.set_page_config(
+    page_title="Bhopal's BRTS Chatbot",
+    page_icon="assets/img/favicon.png",
+    layout="wide",
+)
 st.write(CSS_STYLING, unsafe_allow_html=True)
 
-map_, home, overview, team = st.tabs(['Home', 'Overview', 'Chatbot', 'Team'])
+map_, home, overview, team = st.tabs(["Home", "Overview", "Chatbot", "Team"])
 
 home_page(home)
 overview_page(overview)

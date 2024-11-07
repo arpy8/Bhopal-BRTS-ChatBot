@@ -97,37 +97,104 @@ p, ol, ul, dl {
 """
 
 LANDMARK_COLORS = {
-    "SR1": {"rgb":[255, 86, 51],  "hex":"#FF5633", "source": [255, 165, 0], "target": [255, 69, 0]},
-    "SR2": {"rgb":[51, 163, 255], "hex":"#33A3FF", "source": [0, 128, 128], "target": [0, 206, 209]},
-    "SR3": {"rgb":[168, 51, 255], "hex":"#A833FF", "source": [138, 43, 226], "target": [255, 215, 0]},
-    "SR4": {"rgb":[51, 255, 188], "hex":"#33FFBC", "source": [255, 140, 0], "target": [255, 99, 71]},
-    "SR5": {"rgb":[255, 51, 168], "hex":"#FF33A8", "source": [0, 255, 127], "target": [255, 20, 147]},
-    "SR6": {"rgb":[255, 214, 51], "hex":"#FFD633", "source": [34, 139, 34], "target": [60, 179, 113]},
-    "SR7": {"rgb":[51, 255, 86],  "hex":"#33FF56", "source": [135, 206, 235], "target": [46, 139, 87]},
-    "SR8": {"rgb":[255, 140, 51], "hex":"#FF8C33", "source": [0, 191, 255], "target": [25, 25, 112]},
-    "TR1": {"rgb":[51, 79, 255],  "hex":"#334FFF", "source": [255, 99, 71], "target": [178, 34, 34]},
-    "TR2": {"rgb":[255, 51, 63],  "hex":"#FF333F", "source": [255, 182, 193], "target": [255, 160, 122]},
-    "TR3": {"rgb":[51, 255, 140], "hex":"#33FF8C", "source": [72, 61, 139], "target": [173, 216, 230]},
-    "TR4": {"rgb":[183, 255, 51], "hex":"#B7FF33", "source": [255, 255, 0], "target": [255, 140, 0]},
-    "All": {"rgb":[183, 255, 51], "hex":"#ff0000", "source": [255, 255, 0], "target": [255, 140, 0]},
-    "user": {"rgb":[255, 255, 255], "hex":"#ff0000", "source": [255, 255, 0], "target": [255, 140, 0]}
+    "SR1": {
+        "rgb": [255, 86, 51],
+        "hex": "#FF5633",
+        "source": [255, 165, 0],
+        "target": [255, 69, 0],
+    },
+    "SR2": {
+        "rgb": [51, 163, 255],
+        "hex": "#33A3FF",
+        "source": [0, 128, 128],
+        "target": [0, 206, 209],
+    },
+    "SR3": {
+        "rgb": [168, 51, 255],
+        "hex": "#A833FF",
+        "source": [138, 43, 226],
+        "target": [255, 215, 0],
+    },
+    "SR4": {
+        "rgb": [51, 255, 188],
+        "hex": "#33FFBC",
+        "source": [255, 140, 0],
+        "target": [255, 99, 71],
+    },
+    "SR5": {
+        "rgb": [255, 51, 168],
+        "hex": "#FF33A8",
+        "source": [0, 255, 127],
+        "target": [255, 20, 147],
+    },
+    "SR6": {
+        "rgb": [255, 214, 51],
+        "hex": "#FFD633",
+        "source": [34, 139, 34],
+        "target": [60, 179, 113],
+    },
+    "SR7": {
+        "rgb": [51, 255, 86],
+        "hex": "#33FF56",
+        "source": [135, 206, 235],
+        "target": [46, 139, 87],
+    },
+    "SR8": {
+        "rgb": [255, 140, 51],
+        "hex": "#FF8C33",
+        "source": [0, 191, 255],
+        "target": [25, 25, 112],
+    },
+    "TR1": {
+        "rgb": [51, 79, 255],
+        "hex": "#334FFF",
+        "source": [255, 99, 71],
+        "target": [178, 34, 34],
+    },
+    "TR2": {
+        "rgb": [255, 51, 63],
+        "hex": "#FF333F",
+        "source": [255, 182, 193],
+        "target": [255, 160, 122],
+    },
+    "TR3": {
+        "rgb": [51, 255, 140],
+        "hex": "#33FF8C",
+        "source": [72, 61, 139],
+        "target": [173, 216, 230],
+    },
+    "TR4": {
+        "rgb": [183, 255, 51],
+        "hex": "#B7FF33",
+        "source": [255, 255, 0],
+        "target": [255, 140, 0],
+    },
+    "All": {
+        "rgb": [183, 255, 51],
+        "hex": "#ff0000",
+        "source": [255, 255, 0],
+        "target": [255, 140, 0],
+    },
+    "user": {
+        "rgb": [255, 255, 255],
+        "hex": "#ff0000",
+        "source": [255, 255, 0],
+        "target": [255, 140, 0],
+    },
 }
 
 MAPBOX_STYLES = {
-    "dark":"mapbox://styles/mapbox/dark-v11",
-    "streets":"mapbox://styles/mapbox/streets-v12",
-    "outdoors":"mapbox://styles/mapbox/outdoors-v12",
-    "light":"mapbox://styles/mapbox/light-v11",
-    "satellite":"mapbox://styles/mapbox/satellite-v9",
-    "satellite-streets":"mapbox://styles/mapbox/satellite-streets-v12",
-    "navigation-day":"mapbox://styles/mapbox/navigation-day-v1",
-    "navigation-night":"mapbox://styles/mapbox/navigation-night-v1"
+    "dark": "mapbox://styles/mapbox/dark-v11",
+    "streets": "mapbox://styles/mapbox/streets-v12",
+    "outdoors": "mapbox://styles/mapbox/outdoors-v12",
+    "light": "mapbox://styles/mapbox/light-v11",
+    "satellite": "mapbox://styles/mapbox/satellite-v9",
+    "satellite-streets": "mapbox://styles/mapbox/satellite-streets-v12",
+    "navigation-day": "mapbox://styles/mapbox/navigation-day-v1",
+    "navigation-night": "mapbox://styles/mapbox/navigation-night-v1",
 }
 
-AVATAR = {
-    "assistant": "./assets/img/assistant.png",
-    "user": "./assets/img/user.png"
-}
+AVATAR = {"assistant": "./assets/img/assistant.png", "user": "./assets/img/user.png"}
 
 
 RAG_PROMPT_CONSTANT = """\

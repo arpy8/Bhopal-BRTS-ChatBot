@@ -1,6 +1,7 @@
 import streamlit as st
 import pydeck as pdk
 
+
 # Configure your map setup here
 def map_config(landmark_color="#ff0000"):
     layer = pdk.Layer(
@@ -21,6 +22,7 @@ def map_config(landmark_color="#ff0000"):
     tooltip = {"html": "<b>Location:</b> {position}"}
     return layer, view_state, tooltip
 
+
 st.title("Rotatable BRTS Map")
 
 # Mapbox style and view config
@@ -36,7 +38,7 @@ with st.container():
     bearing = st.slider("Map Rotation", min_value=0, max_value=360, step=1, value=0)
 
     layer, view_state, tooltip = map_config(landmark_color="#ff0000")
-    
+
     # Update view_state bearing for rotation
     view_state.bearing = bearing
 
