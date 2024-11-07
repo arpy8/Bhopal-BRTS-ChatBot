@@ -33,7 +33,7 @@ CSS_STYLING = """
 .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left {
     display: none !important;
 }
-.poppins-light, p, h2, h3, h4, h5, h6 {
+.poppins-light, p, h2, h3, h4, h5, h6, li {
     font-family: "Poppins", sans-serif !important;
     font-weight: 200 !important;
     font-style: normal !important;
@@ -69,25 +69,48 @@ div[data-testid="stMetric"]
     background-color: rgb(19, 23, 32);
     border: 1px solid rgba(250, 250, 250, 0.2);
 }
+div[data-baseweb="textarea"], button[data-testid="stChatInputSubmitButton"] {
+position: absolute !important;
+    border-color: #ff000090 !important; 
+    top: 15px;
+    right: 0px; 
+    width: 100%;
+}
 
+div[data-baseweb="stChatMessageContent"] {
+    font-size: 10px !important;
+}
+
+div[data-testid="stMarkdownContainer"] p {
+    font-size: 13px;
+}
+
+button[data-testid="stChatInputSubmitButton"] {
+    right: 15px;
+}
+
+p, ol, ul, dl {
+    margin: 0px 0px 0.5rem;
+}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 """
 
 LANDMARK_COLORS = {
-    "SR1": {"rgb":[255, 86, 51], "source": [255, 165, 0], "target": [255, 69, 0]},
-    "SR2": {"rgb":[51, 163, 255], "source": [0, 128, 128], "target": [0, 206, 209]},
-    "SR3": {"rgb":[168, 51, 255], "source": [138, 43, 226], "target": [255, 215, 0]},
-    "SR4": {"rgb":[51, 255, 188], "source": [255, 140, 0], "target": [255, 99, 71]},
-    "SR5": {"rgb":[255, 51, 168], "source": [0, 255, 127], "target": [255, 20, 147]},
-    "SR6": {"rgb":[255, 214, 51], "source": [34, 139, 34], "target": [60, 179, 113]},
-    "SR7": {"rgb":[51, 255, 86], "source": [135, 206, 235], "target": [46, 139, 87]},
-    "SR8": {"rgb":[255, 140, 51], "source": [0, 191, 255], "target": [25, 25, 112]},
-    "TR1": {"rgb":[51, 79, 255], "source": [255, 99, 71], "target": [178, 34, 34]},
-    "TR2": {"rgb":[255, 51, 63], "source": [255, 182, 193], "target": [255, 160, 122]},
-    "TR3": {"rgb":[51, 255, 140], "source": [72, 61, 139], "target": [173, 216, 230]},
-    "TR4": {"rgb":[183, 255, 51], "source": [255, 255, 0], "target": [255, 140, 0]},
-    "All": {"rgb":[183, 255, 51], "source": [255, 255, 0], "target": [255, 140, 0]}
+    "SR1": {"rgb":[255, 86, 51],  "hex":"#FF5633", "source": [255, 165, 0], "target": [255, 69, 0]},
+    "SR2": {"rgb":[51, 163, 255], "hex":"#33A3FF", "source": [0, 128, 128], "target": [0, 206, 209]},
+    "SR3": {"rgb":[168, 51, 255], "hex":"#A833FF", "source": [138, 43, 226], "target": [255, 215, 0]},
+    "SR4": {"rgb":[51, 255, 188], "hex":"#33FFBC", "source": [255, 140, 0], "target": [255, 99, 71]},
+    "SR5": {"rgb":[255, 51, 168], "hex":"#FF33A8", "source": [0, 255, 127], "target": [255, 20, 147]},
+    "SR6": {"rgb":[255, 214, 51], "hex":"#FFD633", "source": [34, 139, 34], "target": [60, 179, 113]},
+    "SR7": {"rgb":[51, 255, 86],  "hex":"#33FF56", "source": [135, 206, 235], "target": [46, 139, 87]},
+    "SR8": {"rgb":[255, 140, 51], "hex":"#FF8C33", "source": [0, 191, 255], "target": [25, 25, 112]},
+    "TR1": {"rgb":[51, 79, 255],  "hex":"#334FFF", "source": [255, 99, 71], "target": [178, 34, 34]},
+    "TR2": {"rgb":[255, 51, 63],  "hex":"#FF333F", "source": [255, 182, 193], "target": [255, 160, 122]},
+    "TR3": {"rgb":[51, 255, 140], "hex":"#33FF8C", "source": [72, 61, 139], "target": [173, 216, 230]},
+    "TR4": {"rgb":[183, 255, 51], "hex":"#B7FF33", "source": [255, 255, 0], "target": [255, 140, 0]},
+    "All": {"rgb":[183, 255, 51], "hex":"#ff0000", "source": [255, 255, 0], "target": [255, 140, 0]},
+    "user": {"rgb":[255, 255, 255], "hex":"#ff0000", "source": [255, 255, 0], "target": [255, 140, 0]}
 }
 
 MAPBOX_STYLES = {
@@ -99,4 +122,9 @@ MAPBOX_STYLES = {
     "satellite-streets":"mapbox://styles/mapbox/satellite-streets-v12",
     "navigation-day":"mapbox://styles/mapbox/navigation-day-v1",
     "navigation-night":"mapbox://styles/mapbox/navigation-night-v1"
+}
+
+AVATAR = {
+    "assistant": "./assets/img/assistant.png",
+    "user": "./assets/img/user.png"
 }

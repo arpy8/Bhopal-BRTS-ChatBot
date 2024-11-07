@@ -1,32 +1,98 @@
-import humanize
-import warnings
+# import humanize
+# import warnings
 import pandas as pd
 import pydeck as pdk
 import streamlit as st
-import plotly.express as px
+# import plotly.express as px
 from streamlit_js_eval import get_geolocation
-from constants import LANDMARK_COLORS, MAPBOX_STYLES
-from utils import hex_to_rgb
+from utils.constants import LANDMARK_COLORS, MAPBOX_STYLES, AVATAR
+from utils.utils import stream_data, find_closest_bus_station, first_message
+
 
 og_df = pd.read_csv("assets/data/all_routes_combined.csv")
 df = og_df.copy()
 df['size'] = 5
+df['color'] = df.apply(lambda x: LANDMARK_COLORS[x['route']]['rgb'], axis=1)
 
-def map_config(landmark_color):
+def user_selected_map(user_current_location_info, closet_bus_station): 
+
+    arc_data = []
+    scatter_data = []
+    # df = df[df['route'] == selected_route] if selected_route != 'All' else df
+
+    # for i in range(len(df) - 1):
+    arc_data.append({
+        "from_name": user_current_location_info["station"],
+        "to_name": closet_bus_station["station"],
+        "from_coordinates": [user_current_location_info["longitude"], user_current_location_info["latitude"]], 
+        "to_coordinates": [closet_bus_station["longitude"], closet_bus_station["latitude"]],
+        "route": closet_bus_station["route"]
+    })
+    
+    scatter_data.append({
+        "coordinates": [closet_bus_station["longitude"], closet_bus_station["latitude"]],
+        "station_name": closet_bus_station["station"]
+    })
+
+    scatter_data.append({
+        "coordinates": [user_current_location_info["longitude"], user_current_location_info["latitude"]],
+        "station_name": user_current_location_info["station"]
+    })
+
+    arc_layer = pdk.Layer(
+        "ArcLayer",
+        arc_data,
+        pickable=True,
+        get_source_position="from_coordinates",
+        get_target_position="to_coordinates",
+        # get_source_color=LANDMARK_COLORS[selected_route]['source'],
+        # get_target_color=LANDMARK_COLORS[selected_route]['target'],
+        get_width=3,
+        auto_highlight=True,
+        tooltip={"text": "{from_name} to {to_name} - Route: {route}"}
+    )
+
+    scatter_layer = pdk.Layer(
+        "ScatterplotLayer",
+        scatter_data,
+        pickable=True,
+        get_position="coordinates",
+        # get_fill_color=LANDMARK_COLORS[selected_route]['rgb'],
+        get_radius=100,
+        tooltip={"text": "{station_name}"},
+    )
+
+    view_state = pdk.ViewState(
+        latitude=df['latitude'].mean(), 
+        longitude=df['longitude'].mean(), 
+        zoom=11, 
+        bearing=0, 
+        pitch=50
+    )
+
+    r = pdk.Deck(
+        layers=[arc_layer, scatter_layer],
+        initial_view_state=view_state,
+    )
+
+    return r
+
+
+def map_config(df, user_lat=None, user_long=None):
     layer = pdk.Layer(
         'ScatterplotLayer',
         df,
         get_position='[longitude, latitude]',
         get_radius=50,
-        get_color=hex_to_rgb(landmark_color),
+        get_color='color',
         pickable=True,
     )
 
     view_state = pdk.ViewState(
-        latitude=df['latitude'].mean(),
-        longitude=df['longitude'].mean(),
-        zoom=10,
-        pitch=10
+        latitude=user_lat if user_lat else df['latitude'].mean(),
+        longitude=user_long if user_long else df['longitude'].mean(),
+        zoom=14 if user_lat and user_long else 10,
+        pitch=50
     )
 
     tooltip = {
@@ -37,58 +103,92 @@ def map_config(landmark_color):
     return layer, view_state, tooltip
 
 
-def main(map):
-    global df
-    
-    # map.write("<h3>📊 Overview Of BRTS Dataset</h3>", unsafe_allow_html=True)
-    a1, a2, a3, a4, input_area, locate_me = map.columns([0.65,0.65,0.65,1,1.6,0.5])
+def main(map_):
+        global df, og_df
+        
+        a1, a2, a3, a4, input_area, locate_me = map_.columns([0.65, 0.65, 0.65, 1, 1.6, 0.5])
 
-    try:
-        # selected_route = input_area.selectbox("Select a Route", ['All', *LANDMARK_COLORS], key="selected_route")
-        # csv = df.to_csv(index=False).encode('utf-8')
-
-        # locate_me.write("<br>"*1, unsafe_allow_html=True)
-
-        cols = map.columns([0.3,1])
+    # try:
+        cols = map_.columns([1, 2.5, 1.2])
         
         with cols[0]:
-            # with st.container(border=True, height=530):
-            with st.container():
+            with st.container(border=True):
                 st.write('<h4 class="poppins-light">Dashboard</h4>', unsafe_allow_html=True)
                 locate_me = st.checkbox("Locate Me", key="locate_me")
-                mapbox_style = st.selectbox("Map Style", MAPBOX_STYLES, key="mapbox_style")
-                # landmark_color = st.color_picker("Color", key="landmark_color", value="#ffff00")
-                # st.write('<button class="my-button"><i class="fa-solid fa-rotate-right">&nbsp;&nbsp;</i>Reset</button>', unsafe_allow_html=True)
-                st.info('more components to be added here')
+                mapbox_style = st.selectbox("Map Style", [i.title() for i in MAPBOX_STYLES], key="mapbox_style")
+                # st.info('More components to be added here')
+                
+                user_lat, user_long = None, None
                 
                 if locate_me:
                     loc = get_geolocation()
                     if loc is not None:
                         st.toast("📍 Locating you...")
                         user_lat, user_long = loc['coords']['latitude'], loc['coords']['longitude']
-                        st.toast("📍 Location found! {} {}".format(user_lat, user_long))
+                        st.toast(f"📍 Location found! {user_lat}, {user_long}")
+                        
                         additional_point = pd.DataFrame({
-                            'latitude': user_lat,
-                            'longitude': user_long,
-                            'color': ['#00ff00'],
+                            'station': ['Your Location'],
+                            'latitude': [user_lat],
+                            'longitude': [user_long],
+                            'color': [[255, 255, 255]],
                             'size': [20]
                         })
-
                         df = pd.concat([df, additional_point])
 
+            with st.container(border=True):
+                if locate_me:
+                    st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
+                    st.write_stream(first_message(df=og_df, user_lat=user_lat, user_long=user_long))
+                else:
+                    st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
+                    st.write('Launched in 2006, Bhopal BRTS aimed to serve central districts but was discontinued in December 2023 due to traffic issues. Dismantling began January 2024, replaced by a central road divider.')
                 
         with cols[1]:
-            layer, view_state, tooltip = map_config(landmark_color="#ff0000")
-            map = pdk.Deck(
-                        map_style=MAPBOX_STYLES[mapbox_style],
+            with st.container(border=True, height=530):
+                # if locate_me:
+                #     closest_bus_station = find_closest_bus_station(og_df, user_lat, user_long)
+                #     new_map = user_selected_map(user_current_location_info=additional_point, closet_bus_station=closest_bus_station)
+                #     st.pydeck_chart(new_map)
+                    
+                # else:
+                    layer, view_state, tooltip = map_config(df, user_lat=user_lat, user_long=user_long)
+                    brts_map = pdk.Deck(
+                        map_style=MAPBOX_STYLES[mapbox_style.lower()],
                         initial_view_state=view_state,
                         layers=[layer],
                         tooltip=tooltip,
-                )
-            st.pydeck_chart(map)
-        
-    except Exception as e:
-        st.error(e)
+                    )
+                    st.pydeck_chart(brts_map)
+                    
+                    
+        with cols[2]:
+            # if locate_me:
+            #     with st.container(border=True):
+            #         st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
+            #         st.write_stream(first_message(df=og_df, user_lat=user_lat, user_long=user_long))
+
+            with st.container(border=True, height=530):
+                st.write('<h4 class="poppins-light">Chatbot</h4>', unsafe_allow_html=True)
+                
+                if "messages" not in st.session_state:
+                    st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you? this is a test message blah blah blah blah balh balh abla hab alah"}]
+
+                chat_window = st.empty()
+
+                if prompt := st.chat_input(placeholder="Ask your question..."):
+                    st.session_state.messages.append({"role": "user", "content": prompt})
+                    st.session_state.messages.append({"role": "assistant", "content": "sample response"})
+                
+                with chat_window.container(border=False, height=370):
+                    for msg in st.session_state.messages[:-1]:
+                        st.chat_message(msg["role"], avatar=AVATAR[msg["role"]]).write(msg["content"])
+                    
+                    if st.session_state.messages[-1]['role'] == 'assistant' and len(st.session_state.messages) > 1:
+                        st.chat_message("assistant", avatar=AVATAR["assistant"]).write(st.session_state.messages[-1]['content'])
+    
+    # except Exception as e:
+    #     st.error(e)
 
 if __name__ == '__main__':
     main()

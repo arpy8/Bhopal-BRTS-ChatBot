@@ -5,7 +5,7 @@ import pydeck as pdk
 import streamlit as st
 import plotly.express as px
 from streamlit_js_eval import get_geolocation
-from constants import LANDMARK_COLORS
+from utils.constants import LANDMARK_COLORS
 
 def generate_map(df, selected_route):
     arc_data = []

@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_lottie import st_lottie
-from constants import PROJECT_DESC
+from utils.constants import PROJECT_DESC
 
 def main(home):    
     home.write("<br>"*1, unsafe_allow_html=True)
