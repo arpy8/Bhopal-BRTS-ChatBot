@@ -1,4 +1,4 @@
-chromadb==0.5.18
+chromadb==0.3.29
 humanize==4.11.0
 numpy==2.1.3
 pandas==2.2.3
