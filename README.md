@@ -13,7 +13,5 @@ The goal of this project is to develop an AI-driven chatbot that provides real-t
 ### Branch
 
 Explore other branches of the project
-- streamlit
-    Contains the client side script for the streamlit app hosted on streamlit cloud
-- telegram
-    Contains the server side script for the telegram bot hosted on AWS EC2 instance
+- `streamlit`: contains the client side script for the streamlit app hosted on streamlit cloud
+- `telegram`: contains the server side script for the telegram bot hosted on AWS EC2 instance
