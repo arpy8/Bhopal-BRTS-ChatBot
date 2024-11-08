@@ -16,7 +16,7 @@ st.set_page_config(
 )
 st.write(CSS_STYLING, unsafe_allow_html=True)
 
-map_, home, overview, team = st.tabs(["Home", "Overview", "Chatbot", "Team"])
+home, overview, map_, team = st.tabs(["Home", "Overview", "Chatbot", "Team"])
 
 home_page(home)
 overview_page(overview)
