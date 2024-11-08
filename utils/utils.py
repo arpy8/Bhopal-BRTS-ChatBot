@@ -1,19 +1,8 @@
 import time
 import random
 import numpy as np
-import pandas as pd
 import streamlit as st
-
-MESSAGE_TEMPLATE = [
-    """
-The closest bus station from your location is **{station}**, which is approximately **{distance}** kms away from you. This station serves the following route(s): {routes}
-
-""",
-    """
-
-Would you like to get further information about this route or any other routes in the city?
-""",
-]
+from utils.constants import FIRST_MESSAGE_TEMPLATE
 
 
 def haversine(lat1, lon1, lat2, lon2):
@@ -31,7 +20,6 @@ def haversine(lat1, lon1, lat2, lon2):
         return distance
 
     return None
-
 
 def find_closest_bus_station(df, current_lat, current_lon):
     df["distance"] = df.apply(
@@ -65,7 +53,7 @@ def display_current_info(df, user_lat, user_long):
     try:
         closest_bus_station = find_closest_bus_station(df, user_lat, user_long)
         if closest_bus_station is not None:
-            formatted_message = MESSAGE_TEMPLATE[0].format(station=closest_bus_station["station"],distance=round(closest_bus_station["distance"], 2),routes=" ".join(closest_bus_station["all_routes"]))
+            formatted_message = FIRST_MESSAGE_TEMPLATE.format(station=closest_bus_station["station"],distance=round(closest_bus_station["distance"], 2),routes=" ".join(closest_bus_station["all_routes"]))
             
             st.write(formatted_message)
             st.link_button(
@@ -85,6 +73,19 @@ def stream_data(data):
     for word in data.split(" "):
         yield word + " "
         time.sleep(random.uniform(0.06, 0.1))
+
+def update_page_state(state):
+    
+    print(state)
+    if "page_state" not in st.session_state:
+        st.session_state["page_state"] = ""
+    if "hide_scrollbar" not in st.session_state:
+        st.session_state["hide_scrollbar"] = False
+        
+    page_state = st.session_state.page_state = state 
+    # st.toast(page_state)
+    return page_state
+
 
 if __name__ == "__main__":
     print(hex_to_rgb("#ff0000"))

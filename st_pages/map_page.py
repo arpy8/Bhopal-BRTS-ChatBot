@@ -8,7 +8,7 @@ from streamlit_js_eval import get_geolocation
 
 from utils.chatbot import ask_question
 from utils.constants import LANDMARK_COLORS, MAPBOX_STYLES, AVATAR
-from utils.utils import stream_data, find_closest_bus_station, display_current_info
+from utils.utils import stream_data, find_closest_bus_station, display_current_info, update_page_state
 
 
 og_df = pd.read_csv("assets/data/all_routes_combined.csv")
@@ -124,104 +124,101 @@ def map_config(df, user_lat=None, user_long=None):
 def main(map_):
     global df, og_df
 
-    a1, a2, a3, a4, input_area, locate_me = map_.columns(
-        [0.65, 0.65, 0.65, 1, 1.6, 0.5]
-    )
+    with map_.container():
+        update_page_state("map")
+        cols = st.columns([1, 2.5, 1.2])
 
-    # try:
-    cols = map_.columns([1, 2.5, 1.2])
-
-    with cols[0]:
-        with st.container(border=True):
-            st.write('<h4 class="poppins-light">Dashboard</h4>', unsafe_allow_html=True)
-            locate_me = st.checkbox("Locate Me", key="locate_me")
-            mapbox_style = st.selectbox(
-                "Map Style", [i.title() for i in MAPBOX_STYLES], key="mapbox_style"
-            )
-            # st.info('More components to be added here')
-
-            user_lat, user_long = None, None
-
-            if locate_me:
-                loc = get_geolocation()
-                if loc is not None:
-                    st.toast("📍 Locating you...")
-                    user_lat, user_long = (
-                        loc["coords"]["latitude"],
-                        loc["coords"]["longitude"],
-                    )
-                    st.toast(f"📍 Location found! {user_lat}, {user_long}")
-
-                    additional_point = pd.DataFrame(
-                        {
-                            "station": ["Your Location"],
-                            "latitude": [user_lat],
-                            "longitude": [user_long],
-                            "color": [[255, 255, 255]],
-                            "size": [20],
-                        }
-                    )
-                    df = pd.concat([df, additional_point])
-
-        with st.container(border=True, height=260 if locate_me else 220):
-            if locate_me:
-                st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
-                display_current_info_ = display_current_info(df=og_df, user_lat=user_lat, user_long=user_long)
-            else:
-                st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
-                st.write(
-                    "Launched in 2006, Bhopal BRTS aimed to serve central districts but was discontinued in December 2023 due to traffic issues. Dismantling began January 2024, replaced by a central road divider."
+        with cols[0]:
+            with st.container(border=True):
+                st.write('<h4 class="poppins-light">Dashboard</h4>', unsafe_allow_html=True)
+                locate_me = st.checkbox("Locate Me", key="locate_me")
+                mapbox_style = st.selectbox(
+                    "Map Style", [i.title() for i in MAPBOX_STYLES], key="mapbox_style"
                 )
-        
-        if not locate_me:
-            st.image(r"assets/img/omdena.png", use_container_width=True)
-                
+                # 'More components can be added here'
 
-    with cols[1]:
-        with st.container(border=True, height=530):
-            # if locate_me:
-            #     closest_bus_station = find_closest_bus_station(og_df, user_lat, user_long)
-            #     new_map = user_selected_map(user_current_location_info=additional_point, closet_bus_station=closest_bus_station)
-            #     st.pydeck_chart(new_map)
+                user_lat, user_long = None, None
 
-            # else:
-            layer, view_state, tooltip = map_config(
-                df, user_lat=user_lat, user_long=user_long
-            )
-            brts_map = pdk.Deck(
-                map_style=MAPBOX_STYLES[mapbox_style.lower()],
-                initial_view_state=view_state,
-                layers=[layer],
-                tooltip=tooltip,
-            )
-            st.pydeck_chart(brts_map)
+                if locate_me:
+                    loc = get_geolocation()
+                    if loc is not None:
+                        st.toast("📍 Locating you...")
+                        user_lat, user_long = (
+                            loc["coords"]["latitude"],
+                            loc["coords"]["longitude"],
+                        )
+                        st.toast(f"📍 Location found! {user_lat}, {user_long}")
 
-    with cols[2]:        
-        if "messages" not in st.session_state:
-            st.session_state["messages"] = [
-                {
-                    "role": "assistant", 
-                    "content": "I can help you with your queries about the BRTS System. How can I assist you today?"
-                }
-            ]
+                        additional_point = pd.DataFrame(
+                            {
+                                "station": ["Your Location"],
+                                "latitude": [user_lat],
+                                "longitude": [user_long],
+                                "color": [[255, 255, 255]],
+                                "size": [20],
+                            }
+                        )
+                        df = pd.concat([df, additional_point])
 
-        with st.container(border=True):
-            st.write('<h4 class="poppins-light chatbot-heading">Chatbot</h4>', unsafe_allow_html=True)
-            with st.container(border=False, height=385):
-                
-                for msg in st.session_state.messages:
-                    st.chat_message(msg["role"]).write(msg["content"])
-                
-                m1 = st.empty()
-                m2 = st.empty()
+            with st.container(border=True, height=260 if locate_me else 220):
+                if locate_me:
+                    st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
+                    display_current_info_ = display_current_info(df=og_df, user_lat=user_lat, user_long=user_long)
+                else:
+                    st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
+                    st.write(
+                        "Launched in 2006, Bhopal BRTS aimed to serve central districts but was discontinued in December 2023 due to traffic issues. Dismantling began January 2024, replaced by a central road divider."
+                    )
+            
+            if not locate_me:
+                st.image(r"assets/img/omdena.png", use_container_width=True)
+                    
 
-            if prompt := st.chat_input():
-                st.session_state.messages.append({"role": "user", "content": prompt})
-                m1.chat_message("user").write(prompt)
-                with st.spinner("Lemme think..."):
-                    msg = ask_question(query=str(prompt), current_location=locate_me)
-                st.session_state.messages.append({"role": "assistant", "content": msg})
-                m2.chat_message("assistant").write(msg)
+        with cols[1]:
+            with st.container(border=True, height=530):
+                # if locate_me:
+                #     closest_bus_station = find_closest_bus_station(og_df, user_lat, user_long)
+                #     new_map = user_selected_map(user_current_location_info=additional_point, closet_bus_station=closest_bus_station)
+                #     st.pydeck_chart(new_map)
+
+                # else:
+                layer, view_state, tooltip = map_config(
+                    df, user_lat=user_lat, user_long=user_long
+                )
+                brts_map = pdk.Deck(
+                    map_style=MAPBOX_STYLES[mapbox_style.lower()],
+                    initial_view_state=view_state,
+                    layers=[layer],
+                    tooltip=tooltip,
+                )
+                st.pydeck_chart(brts_map)
+
+        with cols[2]:        
+            if "messages" not in st.session_state:
+                st.session_state["messages"] = [
+                    {
+                        "role": "assistant", 
+                        "content": "I can help you with your queries about the BRTS System. How can I assist you today?"
+                    }
+                ]
+
+            with st.container(border=True):
+                st.write('<h4 class="poppins-light chatbot-heading">Chatbot</h4>', unsafe_allow_html=True)
+                with st.container(border=False, height=385):
+                    
+                    for msg in st.session_state.messages:
+                        st.chat_message(msg["role"]).write(msg["content"])
+                    
+                    m1 = st.empty()
+                    m2 = st.empty()
+
+                if prompt := st.chat_input():
+                    st.session_state.messages.append({"role": "user", "content": prompt})
+                    m1.chat_message("user").write(prompt)
+                    with st.spinner("Lemme think..."):
+                        msg = ask_question(query=str(prompt), current_location=locate_me)
+                    st.session_state.messages.append({"role": "assistant", "content": msg})
+                    m2.chat_message("assistant").write(msg)
 
 
 if __name__ == "__main__":

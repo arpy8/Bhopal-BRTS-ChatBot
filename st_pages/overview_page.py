@@ -1,10 +1,12 @@
-import humanize
-import warnings
+# import humanize
+# import warnings
 import pandas as pd
 import pydeck as pdk
 import streamlit as st
-import plotly.express as px
-from streamlit_js_eval import get_geolocation
+# import plotly.express as px
+# from streamlit_js_eval import get_geolocation
+
+from utils.utils import update_page_state
 from utils.constants import LANDMARK_COLORS
 
 
@@ -81,68 +83,65 @@ def generate_map(df, selected_route):
 
 
 def main(overview):
-    overview.write(
-        """<h3><i class="fa-solid fa-chart-simple"></i>&nbsp;&nbsp;Overview Of BRTS Dataset</h3>""",
-        unsafe_allow_html=True,
-    )
-    a1, a2, a3, a4, input_area, dl_csv = overview.columns(
-        [0.65, 0.65, 0.65, 0.8, 1.35, 0.6]
-    )
-
-    try:
-        og_df = pd.read_csv("assets/data/all_routes_combined.csv", index_col=0)
-
-        df = og_df.copy()
-        df["size"] = 5
-        df["color"] = df["route"].map(lambda x: LANDMARK_COLORS[x]["rgb"])
-
-        selected_route = input_area.selectbox(
-            "Select a Route", [*LANDMARK_COLORS, "All"]
+    with overview.container():
+        update_page_state("overview")
+        
+        st.write(
+            """<h3><i class="fa-solid fa-chart-simple"></i>&nbsp;&nbsp;Overview Of BRTS Dataset</h3>""",
+            unsafe_allow_html=True,
+        )
+        a1, a2, a3, a4, input_area, dl_csv = st.columns(
+            [0.65, 0.65, 0.65, 0.8, 1.35, 0.6]
         )
 
-        a1.metric("Total Stations", df.shape[0])
-        a2.metric(":blue[SR Routes]", 8, help="Standard Routes")
-        a3.metric(":blue[TR Routes]", 4, help="Trunk Routes")
-        a4.metric(
-            ":green[Selected Route Stations]",
-            df.shape[0]
-            if selected_route == "All"
-            else df[df["route"] == selected_route].shape[0],
-        )
+        try:
+            og_df = pd.read_csv("assets/data/all_routes_combined.csv", index_col=0)
 
-        csv = og_df.to_csv(index=False).encode("utf-8")
-        dl_csv.write("<br>", unsafe_allow_html=True)
-        dl_csv.download_button(
-            "Download Data",
-            data=csv,
-            file_name="all_routes_combined.csv",
-            mime="text/csv",
-            use_container_width=True,
-        )
+            df = og_df.copy()
+            df["size"] = 5
+            df["color"] = df["route"].map(lambda x: LANDMARK_COLORS[x]["rgb"])
 
-        cols = overview.columns([1, 0.7])
+            selected_route = input_area.selectbox(
+                "Select a Route", [*LANDMARK_COLORS, "All"]
+            )
 
-        with cols[0]:
-            st.dataframe(
-                og_df
+            a1.metric("Total Stations", df.shape[0])
+            a2.metric(":blue[SR Routes]", 8, help="Standard Routes")
+            a3.metric(":blue[TR Routes]", 4, help="Trunk Routes")
+            a4.metric(
+                ":green[Selected Route Stations]",
+                df.shape[0]
                 if selected_route == "All"
-                else og_df.loc[df["route"] == selected_route],
-                height=420,
+                else df[df["route"] == selected_route].shape[0],
+            )
+
+            csv = og_df.to_csv(index=False).encode("utf-8")
+            dl_csv.write("<br>", unsafe_allow_html=True)
+            dl_csv.download_button(
+                "Download Data",
+                data=csv,
+                file_name="all_routes_combined.csv",
+                mime="text/csv",
                 use_container_width=True,
             )
-        with cols[1]:
-            with st.container():
-                map = generate_map(df, selected_route)
-                st.components.v1.html(map.to_html(as_string=True), height=420)
-                # st.pydeck_chart(map)
-                # st.map(df if selected_route == 'All' else df.loc[df['route']==selected_route],
-                #     color='color',
-                #     size='size',
-                #     height=390
-                # )
 
-    except IndexError:
-        overview.dataframe(df, height=200)
+            cols = st.columns([1, 0.7])
+
+            with cols[0]:
+                st.dataframe(
+                    og_df
+                    if selected_route == "All"
+                    else og_df.loc[df["route"] == selected_route],
+                    height=420,
+                    use_container_width=True,
+                )
+            with cols[1]:
+                with st.container():
+                    map = generate_map(df, selected_route)
+                    st.components.v1.html(map.to_html(as_string=True), height=420)
+
+        except IndexError:
+            st.dataframe(df, height=200)
 
 
 if __name__ == "__main__":
