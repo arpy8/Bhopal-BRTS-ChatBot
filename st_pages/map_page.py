@@ -8,7 +8,7 @@ from streamlit_js_eval import get_geolocation
 
 from utils.chatbot import ask_question
 from utils.constants import LANDMARK_COLORS, MAPBOX_STYLES, AVATAR
-from utils.utils import stream_data, find_closest_bus_station, first_message
+from utils.utils import stream_data, find_closest_bus_station, display_current_info
 
 
 og_df = pd.read_csv("assets/data/all_routes_combined.csv")
@@ -166,7 +166,7 @@ def main(map_):
         with st.container(border=True, height=260 if locate_me else 220):
             if locate_me:
                 st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
-                first_message(df=og_df, user_lat=user_lat, user_long=user_long)
+                display_current_info_ = display_current_info(df=og_df, user_lat=user_lat, user_long=user_long)
             else:
                 st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
                 st.write(
@@ -205,22 +205,23 @@ def main(map_):
                 }
             ]
 
-        st.write('<h4 class="poppins-light chatbot-heading">Chatbot</h4>', unsafe_allow_html=True)
-        with st.container(border=True, height=416):
-            
-            for msg in st.session_state.messages:
-                st.chat_message(msg["role"]).write(msg["content"])
-            
-            m1 = st.empty()
-            m2 = st.empty()
+        with st.container(border=True):
+            st.write('<h4 class="poppins-light chatbot-heading">Chatbot</h4>', unsafe_allow_html=True)
+            with st.container(border=False, height=385):
+                
+                for msg in st.session_state.messages:
+                    st.chat_message(msg["role"]).write(msg["content"])
+                
+                m1 = st.empty()
+                m2 = st.empty()
 
-        if prompt := st.chat_input():
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            m1.chat_message("user").write(prompt)
-            with st.spinner("Lemme think..."):
-                msg = ask_question(str(prompt))
-            st.session_state.messages.append({"role": "assistant", "content": msg})
-            m2.chat_message("assistant").write(msg)
+            if prompt := st.chat_input():
+                st.session_state.messages.append({"role": "user", "content": prompt})
+                m1.chat_message("user").write(prompt)
+                with st.spinner("Lemme think..."):
+                    msg = ask_question(query=str(prompt), current_location=locate_me)
+                st.session_state.messages.append({"role": "assistant", "content": msg})
+                m2.chat_message("assistant").write(msg)
 
 
 if __name__ == "__main__":

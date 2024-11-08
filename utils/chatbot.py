@@ -4,7 +4,6 @@ import google.generativeai as genai
 from chromadb import Documents, EmbeddingFunction, Embeddings
 from .constants import RAG_PROMPT_CONSTANT
 
-
 class GeminiEmbeddingFunction(EmbeddingFunction):
     """
     Embedding function to create embeddings for document retrieval using the Gemini API.
@@ -30,7 +29,7 @@ class GeminiEmbeddingFunction(EmbeddingFunction):
         )["embedding"]
 
 
-def generate_answer(db, query):
+def generate_answer(db, query, current_location):
     """
     Generates an answer to a query by retrieving relevant text passages and using the Gemini model
     to generate a response.
@@ -65,7 +64,7 @@ def generate_answer(db, query):
         return answer.text
 
     relevant_text = get_relevant_passage(query, db, n_results=5)
-    prompt = make_rag_prompt(query, relevant_passage="".join(relevant_text))
+    prompt = make_rag_prompt(query, relevant_passage="".join(relevant_text), current_location=current_location)
 
     answer = __generate_answer(prompt)
 
@@ -104,7 +103,7 @@ def get_relevant_passage(query, db, n_results):
     return db.query(query_texts=[query], n_results=n_results)["documents"][0]
 
 
-def make_rag_prompt(query, relevant_passage):
+def make_rag_prompt(query, relevant_passage, current_location):
     """
     Creates a prompt for a retrieval-augmented generation (RAG) model by combining the query with
     relevant passages.
@@ -117,10 +116,10 @@ def make_rag_prompt(query, relevant_passage):
         str: Formatted RAG prompt combining the query with the relevant passages.
     """
     escaped = relevant_passage.replace("'", "").replace('"', "").replace("\n", " ")
-    return RAG_PROMPT_CONSTANT.format(query=query, relevant_passage=escaped)
+    return RAG_PROMPT_CONSTANT.format(query=query, relevant_passage=escaped, current_location=current_location)
 
 
-def ask_question(query):
+def ask_question(query, current_location=None):
     """
     Main function to handle a user's question by loading the Chroma collection,
     retrieving relevant passages, and generating an answer.
@@ -134,7 +133,7 @@ def ask_question(query):
     db = load_chroma_collection(
         path=r"./assets/data/chroma", name="chatbot_rag_collection"
     )
-    return generate_answer(db, query=query)
+    return generate_answer(db, query=query, current_location=current_location)
 
 
 if __name__ == "__main__":
