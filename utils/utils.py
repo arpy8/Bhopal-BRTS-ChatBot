@@ -1,8 +1,4 @@
-import time
-import random
 import numpy as np
-import streamlit as st
-from utils.constants import FIRST_MESSAGE_TEMPLATE
 
 
 def haversine(lat1, lon1, lat2, lon2):

@@ -1,6 +1,5 @@
 import os
 import chromadb
-import streamlit as st
 import google.generativeai as genai
 from chromadb import Documents, EmbeddingFunction, Embeddings
 
