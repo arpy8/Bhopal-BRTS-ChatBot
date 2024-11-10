@@ -9,5 +9,4 @@ cookies/
 misc/
 secrets.toml
 
-*.bin
 .vercel
