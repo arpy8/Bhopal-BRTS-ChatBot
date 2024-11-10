@@ -1,5 +1,6 @@
-pysqlite3-binary
+# pysqlite3-binary
 pandas==2.2.3
 protobuf==5.28.3
 chromadb==0.5.18
+python-telegram-bot==21.7
 google-generativeai==0.8.3

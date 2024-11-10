@@ -11,8 +11,12 @@ import pandas as pd
 from telegram import Update
 from telegram.ext import CommandHandler, MessageHandler, filters, CallbackContext, Application
 
+from dotenv import load_dotenv
 from utils.chatbot import ask_question
 from utils.utils import find_closest_bus_station
+
+load_dotenv()
+
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -61,7 +65,7 @@ def health_check() -> None:
     logger.info("Performing health check...")
 
     try:
-        df = pd.read_csv("assets/data/all_routes_combined.csv")
+        df = pd.read_csv(os.path.join(os.getcwd(), "assets", "data", "all_routes_combined.csv"))
 
         logger.info("CSV file loaded successfully.")
     except FileNotFoundError:
