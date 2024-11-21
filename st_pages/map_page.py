@@ -258,7 +258,7 @@ def main(map_):
                 if prompt := st.chat_input():
                     st.session_state.messages.append({"role": "user", "content": prompt})
                     m1.chat_message("user").write(prompt)
-                    with st.spinner("Lemme think..."):
+                    with st.spinner("Chatbot is thinking..."):
                         msg = ask_question(query=str(prompt), current_location=locate_me)
                     st.session_state.messages.append({"role": "assistant", "content": msg})
                     m2.chat_message("assistant").write(msg)
