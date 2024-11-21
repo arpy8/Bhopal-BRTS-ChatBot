@@ -10,3 +10,5 @@ misc/
 secrets.toml
 
 .vercel
+
+*.bin

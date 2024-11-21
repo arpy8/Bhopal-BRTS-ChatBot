@@ -4,8 +4,9 @@ import streamlit as st
 from streamlit_js_eval import get_geolocation
 
 from utils.chatbot import ask_question
-from utils.constants import LANDMARK_COLORS, MAPBOX_STYLES, AVATAR
-from utils.utils2 import find_nearest_station_by_time, get_osrm_distance_and_time, display_current_info, update_page_state
+from utils.utils import find_closest_bus_station
+from utils.constants import LANDMARK_COLORS, MAPBOX_STYLES
+from utils.utils2 import find_nearest_station_by_time, display_current_info, update_page_state
 
 
 og_df = pd.read_csv("assets/data/all_routes_combined.csv")
@@ -139,12 +140,12 @@ def main(map_):
                 if locate_me:
                     loc = get_geolocation()  # Get location only if "Locate Me" is checked
                     if loc is not None:
-                        st.toast("📍 Locating you...")
+                        # st.toast("📍 Locating you...")
                         user_lat, user_long = (
                             loc["coords"]["latitude"],
                             loc["coords"]["longitude"],
                         )
-                        st.toast(f"📍 Location found! {user_lat}, {user_long}")
+                        # st.toast(f"📍 Location found! {user_lat}, {user_long}")
 
                         # Add the user's location as an additional point to the map
                         additional_point = pd.DataFrame(
@@ -158,19 +159,24 @@ def main(map_):
                         )
                         df = pd.concat([df, additional_point])
 
-                        # Only display current information once the location is fetched
-                        with st.container(border=True, height=260):
+                        with st.container(border=False, height=260):
                             st.write('<h4 class="poppins-light">Info</h4>', unsafe_allow_html=True)
                             display_current_info_ = display_current_info(df=og_df, user_lat=user_lat, user_long=user_long)
 
-                            # Show a message that we're finding the nearest stop
                             with st.spinner("Finding nearest stop..."):
                                 nearest_station, best_distance, shortest_time = find_nearest_station_by_time(user_lat, user_long)
+                                
                                 if nearest_station:
                                     st.write(f"Nearest station: {nearest_station} <br>(Distance: {best_distance} meters, Time: {shortest_time} seconds)", unsafe_allow_html=True)
                                     nearest_station_coords = (df.loc[df['station'] == nearest_station, 'latitude'].values[0], df.loc[df['station'] == nearest_station, 'longitude'].values[0])
                                 else:
-                                    st.error("Could not find a nearby stop.")
+                                    nearest_station = find_closest_bus_station(og_df, user_lat, user_long)
+                                    st.write(f"""
+                                        <p><strong>Nearest Station:</strong> {nearest_station['station']} <br>
+                                        <strong>Distance:</strong> {round(nearest_station['distance'], 3)} Kms</p>
+                                        <p>You are {round(nearest_station['distance'], 3)} meters away from the nearest station. Head there to catch your bus!</p> 
+                                    """, unsafe_allow_html=True) 
+                                    
                     else:
                         st.toast("📍 Location not found. Please try again.")  # Fallback message if location isn't found
                 else:
@@ -258,7 +264,7 @@ def main(map_):
                 if prompt := st.chat_input():
                     st.session_state.messages.append({"role": "user", "content": prompt})
                     m1.chat_message("user").write(prompt)
-                    with st.spinner("Lemme think..."):
+                    with st.spinner("Chatbot is thinking..."):
                         msg = ask_question(query=str(prompt), current_location=locate_me)
                     st.session_state.messages.append({"role": "assistant", "content": msg})
                     m2.chat_message("assistant").write(msg)
